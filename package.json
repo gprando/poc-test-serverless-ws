@@ -1,0 +1,38 @@
+{
+  "name": "test-socket-serverless",
+  "version": "1.0.0",
+  "description": "Serverless webpack using Typescript",
+  "main": "handler.js",
+  "scripts": {
+    "test": "jest",
+    "start": "serverless offline start"
+  },
+  "dependencies": {
+    "@serverless/typescript": "^2.55.0",
+    "aws-sdk": "^2.738.0",
+    "axios": "^0.19.0",
+    "class-validator": "^0.12.2",
+    "mongoose": "^5.13.8",
+    "uuid": "^8.3.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.61",
+    "@types/jest": "^26.0.13",
+    "@types/lodash": "^4.14.172",
+    "@types/node": "^10.12.18",
+    "@types/serverless": "^1.78.20",
+    "@types/uuid": "^8.3.0",
+    "fork-ts-checker-webpack-plugin": "^3.0.1",
+    "jest": "^26.4.2",
+    "serverless-offline": "^5.12.1",
+    "serverless-webpack": "^5.2.0",
+    "source-map-support": "^0.5.10",
+    "ts-jest": "^26.3.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^4.0.2",
+    "webpack": "^4.29.0",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "author": "prando",
+  "license": "MIT"
+}
