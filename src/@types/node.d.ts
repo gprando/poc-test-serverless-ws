@@ -1,6 +1,6 @@
 declare module NodeJS  {
   interface Global {
-    ConnectionSchema: any
+    ConnectionSchema:  any 
     MessageSchema: any
   }
 }

@@ -35,4 +35,4 @@ global.MessageSchema =
   global.MessageSchema ||
   model<MessageDocument, MessageModel>("Message", MessageSchema);
 
-export default global.MessageSchema;
+export default global.MessageSchema as MessageModel;

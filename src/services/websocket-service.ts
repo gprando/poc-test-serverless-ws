@@ -30,7 +30,7 @@ export class WebsocketService {
 
     const returnMessage = "Mensagem enviada via websocket com serverless";
 
-    new WebsocketClientService(requestContext).send(returnMessage);
+    new WebsocketClientService(requestContext).sendAllConnection(returnMessage);
 
     await MessageModel.create({
       roomKey,

@@ -83,7 +83,7 @@ module.exports = {
       events: [
         {
           websocket: {
-            route: "$on-message"
+            route: "$sendmessage"
           }
         }
       ],

@@ -34,4 +34,4 @@ global.ConnectionSchema = global.ConnectionSchema || model<ConnectionDocument, C
   ConnectionSchema
 );
 
-export default global.ConnectionSchema;
+export default global.ConnectionSchema as ConnectionModel;
