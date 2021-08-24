@@ -1,17 +1,27 @@
 import { Response } from "../helper/response";
 import { WebsocketService } from "../services/websocket-service";
 import { WebsocketAPIGatewayEvent } from "./@types";
-import { CustomResponse, FunctionAbstract } from "./abstracts/functions-abstract";
+import {
+  CustomResponse,
+  FunctionAbstract,
+} from "./abstracts/functions-abstract";
 
-export class ConnectFunction extends FunctionAbstract<any, any> {
+export class ConnectFunction extends FunctionAbstract<
+  WebsocketAPIGatewayEvent,
+  void
+> {
   static instance: ConnectFunction;
   private websocketService = new WebsocketService();
 
-  protected buildRequest(request: any): any {
+  protected buildRequest(
+    request: WebsocketAPIGatewayEvent
+  ): WebsocketAPIGatewayEvent {
     return request;
   }
 
-  protected async execute(request: WebsocketAPIGatewayEvent): Promise<CustomResponse<any>> {
+  protected async execute(
+    request: WebsocketAPIGatewayEvent
+  ): Promise<CustomResponse<void>> {
     console.log({ requestContext: request.requestContext });
     console.log({ body: request?.body });
     return Response.ok(await this.websocketService.onConnect(request)).build();
