@@ -16,7 +16,7 @@ module.exports = {
     stackName: "custom-stack-name",
     apiName: "test-websockets-api",
     websocketsApiName: "test-websockets-socket",
-    websocketsApiRouteSelectionExpression: "$request.body.route",
+    websocketsApiRouteSelectionExpression: "$request.body.action", // define qual é a propriedade que irá definir a rota que será executada
     profile: "dev",
     memorySize: 512,
     timeout: 10,
@@ -43,7 +43,6 @@ module.exports = {
     }
   },
   functions: {
-   
     "websocket-connect": {
       handler: "src/handler.connectFunction",
       events: [
@@ -57,7 +56,7 @@ module.exports = {
     },
    
     "websocket-default": {
-      handler: "src/handler.onMessageFunction",
+      handler: "src/handler.defaultFunction",
       events: [
         {
           websocket: {
@@ -84,6 +83,17 @@ module.exports = {
         {
           websocket: {
             route: "$sendmessage"
+          }
+        }
+      ],
+      timeout: 10
+    },
+    "websocket-join-room": {
+      handler: "src/handler.joinRoom",
+      events: [
+        {
+          websocket: {
+            route: "$joinroom"
           }
         }
       ],

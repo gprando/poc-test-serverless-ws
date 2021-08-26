@@ -17,9 +17,28 @@ export class WebsocketService {
     const {
       requestContext: { connectionId },
     } = event;
-    await ConnectionModel.findOneAndDelete({connectionId});
+    const { roomKey, nickName } = await ConnectionModel.findOneAndDelete({
+      connectionId,
+    });
 
-    console.log({ connections:  await ConnectionModel.find() });
+    const message = `${nickName} saiu da sala`;
+
+    await this.notificationRoom(roomKey, message);
+  }
+
+  public async joinRoom(event: WebsocketAPIGatewayEvent): Promise<void> {
+    const { requestContext, body } = event;
+    const { connectionId } = requestContext;
+    const { roomKey, nickName } = JSON.parse(body);
+
+    // atualizar a sala e nick da conexão
+    await ConnectionModel.findOneAndUpdate(
+      { connectionId },
+      { roomKey, nickName }
+    );
+
+    const message = `${nickName}  entrou na sala`;
+    await this.notificationRoom(roomKey, message);
   }
 
   public async onMessage(event: WebsocketAPIGatewayEvent): Promise<void> {
@@ -28,15 +47,33 @@ export class WebsocketService {
     const { roomKey, content } = JSON.parse(body);
     const createdAt = new Date().getTime();
 
-    const returnMessage = "Mensagem enviada via websocket com serverless";
+    const [connection] = await Promise.all([
+      ConnectionModel.findOne({ connectionId }),
+      MessageModel.create({
+        roomKey,
+        content,
+        createdAt,
+        createdBy: connectionId,
+      }),
+    ]);
+    const now = new Date();
+    const nowFormatted = new Intl.DateTimeFormat("pt-BR").format(now);
 
-    new WebsocketClientService(requestContext).sendAllConnection(returnMessage);
+    const message = `${connection.nickName} [${nowFormatted}]: ${content}`;
 
-    await MessageModel.create({
-      roomKey,
-      content,
-      createdAt,
-      createdBy: connectionId,
-    });
+    await this.notificationRoom(roomKey, message);
+  }
+
+  /**
+   * Como para teste tudo será local, não precisa receber nem armazenar o domínio para dar retorno
+   */
+  private async notificationRoom(roomKey: string, message: string) {
+    const connections = await ConnectionModel.find({ roomKey }).select(
+      "connectionId"
+    );
+    const connectionsIdFromRoom = connections.map((c) => c.connectionId);
+    const ws = new WebsocketClientService();
+
+    await ws.sendToConnectionsId(message, connectionsIdFromRoom);
   }
 }

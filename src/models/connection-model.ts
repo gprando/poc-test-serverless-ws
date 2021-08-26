@@ -4,9 +4,7 @@ import { IConnection } from "../interfaces/connection-interface";
 
 export interface IConnectionModel extends IConnection, Document {}
 
-export interface ConnectionDocument extends IConnectionModel {}
-
-export interface ConnectionModel extends Model<ConnectionDocument> {}
+export interface ConnectionModel extends Model<IConnectionModel> {}
 
 export const ConnectionValidatorSchema: IValidatorSchema = {
   type: "object",
@@ -16,20 +14,22 @@ export const ConnectionValidatorSchema: IValidatorSchema = {
       properties: {
         connectionId: { type: "string", minLength: 6, maxLength: 64 },
         roomKey: { type: "string", minLength: 6, maxLength: 64 },
+        nickName: { type: "string", minLength: 6, maxLength: 64 },
         joinedAt: { type: "number" },
       },
-      required: ["connectionId", "roomKey", "joinedAt"],
+      required: ["connectionId", "roomKey", "joinedAt", "nickName"],
     },
   },
 };
 
 export const ConnectionSchema: Schema = new Schema({
   connectionId: { type: String },
+  nickName: { type: String },
   roomKey: { type: String },
   joinedAt: { type: Number },
 });
 
-global.ConnectionSchema = global.ConnectionSchema || model<ConnectionDocument, ConnectionModel>(
+global.ConnectionSchema = global.ConnectionSchema || model<IConnectionModel, ConnectionModel>(
   "Connection",
   ConnectionSchema
 );

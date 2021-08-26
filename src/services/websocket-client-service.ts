@@ -6,16 +6,17 @@ export class WebsocketClientService {
   private ws: ApiGatewayManagementApi;
   private connectionId: string;
 
-  constructor(requestContext: RealtimeAPIGatewayEventRequestContext) {
-    const { stage } = requestContext;
+  constructor(requestContext?: RealtimeAPIGatewayEventRequestContext) {
+    const stage = requestContext?.stage || 'local';
     const configHttp = stage.match(/local|dev/gi) ? "http" : "https";
-    console.log(`${configHttp}://${requestContext.domainName}:3001`);
+    const domain = requestContext?.domainName ?? 'localhost';
+    console.log(`${configHttp}://${domain}:3001`);
 
     this.ws = new ApiGatewayManagementApi({
       apiVersion: "2018-11-29",
-      endpoint: `${configHttp}://${requestContext.domainName}:3001`,
+      endpoint: `${configHttp}://${domain}:3001`,
     });
-    this.connectionId = requestContext.connectionId;
+    this.connectionId = requestContext?.connectionId;
   }
 
   async send(msg: string | unknown, id?: string) {
@@ -45,6 +46,22 @@ export class WebsocketClientService {
       this.ws
         .postToConnection({
           ConnectionId: c.connectionId,
+          Data: parsed,
+        })
+        .promise()
+        .catch((err) => {
+          console.log(JSON.stringify(err));
+        })
+    );
+    return Promise.all(promisesSendMessage);
+  }
+
+  async sendToConnectionsId(msg: string | unknown, idConnections: string []) {
+    let parsed = typeof msg === "string" ? msg : JSON.stringify(msg);
+    const promisesSendMessage = idConnections.map((connectionId) =>
+      this.ws
+        .postToConnection({
+          ConnectionId: connectionId,
           Data: parsed,
         })
         .promise()
