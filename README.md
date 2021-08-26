@@ -8,6 +8,15 @@ docker run -d --name test-socket -p 27017:27017 mongo
 yarn start
 ```
 
+## Para testar usaremos o wscat
+```bash
+# instalar
+npm install -g wscat
+
+## abrir pelo menos 2 terminais na conexão websocket com:
+wscat -c ws://localhost:3001
+```
+
 
 ```json
 # chat 1
